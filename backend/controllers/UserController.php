@@ -14,18 +14,22 @@ use yii\filters\VerbFilter;
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class UserController extends BaseController
 {
 
     public $regions;
+    public $regionId;
+    public $user;
 
     public function __construct($id, $module, $config = [])
     {
         $user = User::findOne(Yii::$app->user->id);
-        if ($user->region->status == Region::STATUS_MAIN){
-            $this->regions = ArrayHelper::map(Region::find()->all(),'id','name');
+        $this->user = $user;
+        $this->regionId = $user->region->id;
+        if ($user->region->status == Region::STATUS_MAIN) {
+            $this->regions = ArrayHelper::map(Region::find()->all(), 'id', 'name');
         } else {
-            $this->regions = ArrayHelper::map($user->region,'id','name');
+            $this->regions = ArrayHelper::map(Region::find()->where(['id' => $user->region->id])->all(), 'id', 'name');
         }
         parent::__construct($id, $module, $config);
     }
@@ -52,7 +56,7 @@ class UserController extends Controller
     public function actionIndex()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $this->user->position, $this->regionId);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -81,11 +85,10 @@ class UserController extends Controller
     public function actionCreate()
     {
         $model = new User();
-
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->load(Yii::$app->request->post());
+        if ($model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
         return $this->render('create', [
             'model' => $model,
             'regions' => $this->regions
@@ -103,10 +106,10 @@ class UserController extends Controller
     {
         $model = $this->findModel($id);
 
-        if ($model->load(Yii::$app->request->post()) && $model->save()) {
+        $model->load(Yii::$app->request->post());
+        if ($model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
-
         return $this->render('update', [
             'model' => $model,
             'regions' => $this->regions

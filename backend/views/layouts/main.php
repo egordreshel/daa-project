@@ -1,6 +1,7 @@
 <?php
 
 /* @var $this \yii\web\View */
+
 /* @var $content string */
 
 use backend\assets\AppAsset;
@@ -30,7 +31,7 @@ AppAsset::register($this);
 <div class="wrap">
     <?php
     $user = User::findOne(Yii::$app->user->id);
-    if (!$region = $user->region->name){
+    if (!$region = $user->region->name) {
         $region = '';
     }
     NavBar::begin([
@@ -40,11 +41,35 @@ AppAsset::register($this);
             'class' => 'navbar-inverse navbar-fixed-top',
         ],
     ]);
-    $menuItems = [
-        ['label' => 'Home', 'url' => ['/site/index']],
-        ['label' => 'Region', 'url' => ['/region/index']],
-        ['label' => 'User', 'url' => ['/user/index']],
-        ['label' => 'Zone', 'url' => ['/zone/index']],
+    $menuItems[] = [
+        'label' => 'Home',
+        'url' => ['/site/index'],
+        'active' => Yii::$app->controller->id == 'site',
+        'visible' => Yii::$app->user->can(Yii::$app->id . '/site/index')
+    ];
+    $menuItems[] = [
+        'label' => 'Region',
+        'url' => ['/region/index'],
+        'active' => Yii::$app->controller->id == 'region',
+        'visible' => Yii::$app->user->can(Yii::$app->id . '/region/index')
+    ];
+    $menuItems[] = [
+        'label' => 'User',
+        'url' => ['/user/index'],
+        'active' => Yii::$app->controller->id == 'user',
+        'visible' => Yii::$app->user->can(Yii::$app->id . '/user/index')
+    ];
+    $menuItems[] = [
+        'label' => 'Prisoners',
+        'url' => ['/prisoner/index'],
+        'active' => Yii::$app->controller->id == 'prisoner',
+        'visible' => Yii::$app->user->can(Yii::$app->id . '/prisoner/index')
+    ];
+    $menuItems[] = [
+        'label' => 'Prison',
+        'url' => ['/zone/index'],
+        'active' => Yii::$app->controller->id == 'zone',
+        'visible' => Yii::$app->user->can(Yii::$app->id . '/zone/index')
     ];
     if (Yii::$app->user->isGuest) {
         $menuItems[] = ['label' => 'Login', 'url' => ['/site/login']];

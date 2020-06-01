@@ -17,7 +17,7 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'status', 'created_at', 'updated_at', 'region_id'], 'integer'],
+            [['id', 'created_at', 'updated_at', 'region_id'], 'integer'],
             [['username', 'auth_key', 'password_hash', 'name', 'second_name', 'position'], 'safe'],
         ];
     }
@@ -38,9 +38,18 @@ class UserSearch extends User
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $position = null, $region)
     {
         $query = User::find();
+        if ($position != User::POSITION_PRISONER) {
+            $query->where(['!=', 'position', User::POSITION_PRISONER]);
+        } else {
+            $query->where(['position' => User::POSITION_PRISONER]);
+        }
+
+        if ($position != self::POSITION_DIRECTOR){
+            $query->andWhere(['region_id' => $region]);
+        }
 
         // add conditions that should always apply here
 
@@ -59,7 +68,6 @@ class UserSearch extends User
         // grid filtering conditions
         $query->andFilterWhere([
             'id' => $this->id,
-            'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'region_id' => $this->region_id,

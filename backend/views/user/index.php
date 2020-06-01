@@ -36,9 +36,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     return \common\models\User::getPositionNames($model->position);
                 }
             ],
-            'status',
             [
                 'attribute' => 'region_id',
+                'label' => 'Region',
                 'value' => function ($model) {
                     return $model->region->name;
                 }

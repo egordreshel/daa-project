@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\User */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Prisoners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
@@ -30,22 +30,25 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'username',
             'name',
             'second_name',
             [
-                'attribute' => 'position',
-                'value' => function ($model) {
-                    return \common\models\User::getPositionNames($model->position);
-                }
-            ],
-            [
                 'attribute' => 'region_id',
+                'label' => 'Region',
                 'value' => function ($model) {
                     return $model->region->name;
                 }
             ],
-        ],
-    ]) ?>
+            'time',
+            ['label' => 'Penalty',
+                'value' => function ($model) {
+                    return $model->prisonerActivities->penalty;
+                }],
+            ['label' => 'Privileges',
+                'value' => function ($model) {
+                    return $model->prisonerActivities->privileges;
+                }],
+            ],
+        ]) ?>
 
 </div>

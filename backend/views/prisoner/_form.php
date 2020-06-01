@@ -1,5 +1,6 @@
 <?php
 
+use common\models\User;
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 
@@ -13,12 +14,6 @@ use yii\widgets\ActiveForm;
     <?php $form = ActiveForm::begin(); ?>
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'username')->textInput(['maxlength' => true]) ?>
-        </div>
-        <div class="col-sm-3">
-            <?= $form->field($model, 'password')->textInput(['type' => 'password']) ?>
-        </div>
-        <div class="col-sm-3">
             <?= $form->field($model, 'name')->textInput(['maxlength' => true]) ?>
         </div>
         <div class="col-sm-3">
@@ -27,15 +22,25 @@ use yii\widgets\ActiveForm;
     </div>
     <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'position')->dropDownList(\common\models\User::getPosition()) ?>
+            <?= $form->field($model, 'token')->textInput() ?>
         </div>
         <?php if (count($regions) > 1): ?>
-        <div class="col-sm-3">
-            <?= $form->field($model, 'region_id')->dropDownList($regions, ['prompt' => 'Select region'])->label('Region') ?>
-        </div>
+            <div class="col-sm-3">
+                <?= $form->field($model, 'region_id')->dropDownList($regions, ['prompt' => 'Select region'])->label('Region') ?>
+            </div>
         <?php else:?>
+            <div class="col-sm-3">
+        <?= $form->field($model, 'region_id')->dropDownList($regions, ['disabled' => 'disabled'])->label('Region') ?>            </div>
+        <?php endif; ?>
+        <?php if (!$model->isNewRecord): ?>
+    </div>
+    <div class="row">
         <div class="col-sm-3">
-            <?= $form->field($model, 'region_id')->dropDownList($regions, ['disabled' => 'disabled'])->label('Region') ?>            </div>
+            <?= $form->field($model, 'penalty')->textarea(); ?>
+        </div>
+        <div class="col-sm-3">
+            <?= $form->field($model, 'privileges')->textarea(); ?>
+        </div>
         <?php endif; ?>
     </div>
 </div>

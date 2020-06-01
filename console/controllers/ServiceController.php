@@ -4,9 +4,8 @@ namespace console\controllers;
 
 use common\models\Region;
 use common\models\User;
-use common\models\Zone;
-use Yii;
 
+use yii\base\Exception;
 use yii\helpers\Console;
 
 /**
@@ -21,6 +20,7 @@ class ServiceController extends \yii\console\Controller
      * @param $username
      * @param $password
      * @return int
+     * @throws Exception
      */
     public function actionDefaultAdmin($region_name, $username, $password)
     {

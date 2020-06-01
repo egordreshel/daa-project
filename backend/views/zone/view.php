@@ -7,7 +7,7 @@ use yii\widgets\DetailView;
 /* @var $model common\models\Zone */
 
 $this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Zones', 'url' => ['index']];
+$this->params['breadcrumbs'][] = ['label' => 'Prisons', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>

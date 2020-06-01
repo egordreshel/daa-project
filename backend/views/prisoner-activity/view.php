@@ -4,14 +4,14 @@ use yii\helpers\Html;
 use yii\widgets\DetailView;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\User */
+/* @var $model backend\models\PrisonerActivity */
 
-$this->title = $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Users', 'url' => ['index']];
+$this->title = $model->id;
+$this->params['breadcrumbs'][] = ['label' => 'Prisoner Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 \yii\web\YiiAsset::register($this);
 ?>
-<div class="user-view">
+<div class="prisoner-activity-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
@@ -30,21 +30,9 @@ $this->params['breadcrumbs'][] = $this->title;
         'model' => $model,
         'attributes' => [
             'id',
-            'username',
-            'name',
-            'second_name',
-            [
-                'attribute' => 'position',
-                'value' => function ($model) {
-                    return \common\models\User::getPositionNames($model->position);
-                }
-            ],
-            [
-                'attribute' => 'region_id',
-                'value' => function ($model) {
-                    return $model->region->name;
-                }
-            ],
+            'prisoner_id',
+            'penalty',
+            'privileges',
         ],
     ]) ?>
 

@@ -3,16 +3,16 @@
 namespace backend\controllers;
 
 use Yii;
-use common\models\Zone;
-use backend\models\ZoneSearch;
+use backend\models\PrisonerActivity;
+use backend\models\PrisonerActivitySearch;
 use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
- * ZoneController implements the CRUD actions for Zone model.
+ * PrisonerActivityController implements the CRUD actions for PrisonerActivity model.
  */
-class ZoneController extends BaseController
+class PrisonerActivityController extends Controller
 {
     /**
      * {@inheritdoc}
@@ -30,13 +30,14 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Lists all Zone models.
+     * Lists all PrisonerActivity models.
+     * @param $prisoner_id
      * @return mixed
      */
-    public function actionIndex()
+    public function actionIndex($prisoner_id)
     {
-        $searchModel = new ZoneSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $searchModel = new PrisonerActivitySearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, $prisoner_id);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
@@ -45,7 +46,7 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Displays a single Zone model.
+     * Displays a single PrisonerActivity model.
      * @param integer $id
      * @return mixed
      * @throws NotFoundHttpException if the model cannot be found
@@ -58,13 +59,13 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Creates a new Zone model.
+     * Creates a new PrisonerActivity model.
      * If creation is successful, the browser will be redirected to the 'view' page.
      * @return mixed
      */
     public function actionCreate()
     {
-        $model = new Zone();
+        $model = new PrisonerActivity();
 
         if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
@@ -76,7 +77,7 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Updates an existing Zone model.
+     * Updates an existing PrisonerActivity model.
      * If update is successful, the browser will be redirected to the 'view' page.
      * @param integer $id
      * @return mixed
@@ -96,7 +97,7 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Deletes an existing Zone model.
+     * Deletes an existing PrisonerActivity model.
      * If deletion is successful, the browser will be redirected to the 'index' page.
      * @param integer $id
      * @return mixed
@@ -110,15 +111,15 @@ class ZoneController extends BaseController
     }
 
     /**
-     * Finds the Zone model based on its primary key value.
+     * Finds the PrisonerActivity model based on its primary key value.
      * If the model is not found, a 404 HTTP exception will be thrown.
      * @param integer $id
-     * @return Zone the loaded model
+     * @return PrisonerActivity the loaded model
      * @throws NotFoundHttpException if the model cannot be found
      */
     protected function findModel($id)
     {
-        if (($model = Zone::findOne($id)) !== null) {
+        if (($model = PrisonerActivity::findOne($id)) !== null) {
             return $model;
         }
 

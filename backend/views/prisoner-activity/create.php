@@ -3,13 +3,13 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Zone */
+/* @var $model backend\models\PrisonerActivity */
 
-$this->title = 'Create Prison';
-$this->params['breadcrumbs'][] = ['label' => 'Prison', 'url' => ['index']];
+$this->title = 'Create Prisoner Activity';
+$this->params['breadcrumbs'][] = ['label' => 'Prisoner Activities', 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="zone-create">
+<div class="prisoner-activity-create">
 
     <h1><?= Html::encode($this->title) ?></h1>
 

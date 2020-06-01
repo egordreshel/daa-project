@@ -1,19 +1,35 @@
 <?php
 
-namespace frontend\controllers;
+namespace backend\controllers;
 
+use common\models\Region;
 use Yii;
 use common\models\User;
-use frontend\models\UserSearch;
-use yii\web\Controller;
+use backend\models\UserSearch;
+use yii\helpers\ArrayHelper;
 use yii\web\NotFoundHttpException;
 use yii\filters\VerbFilter;
 
 /**
  * UserController implements the CRUD actions for User model.
  */
-class UserController extends Controller
+class PrisonerController extends BaseController
 {
+
+    public $regions;
+    public $regionId;
+    public function __construct($id, $module, $config = [])
+    {
+        $user = User::findOne(Yii::$app->user->id);
+        $this->regionId = $user->region->id;
+        if ($user->region->status == Region::STATUS_MAIN) {
+            $this->regions = ArrayHelper::map(Region::find()->all(), 'id', 'name');
+        } else {
+            $this->regions = ArrayHelper::map(Region::find()->where(['id' => $user->region->id])->all(), 'id', 'name');
+        }
+        parent::__construct($id, $module, $config);
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -36,11 +52,34 @@ class UserController extends Controller
     public function actionIndex()
     {
         $searchModel = new UserSearch();
-        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams, User::POSITION_PRISONER,  $this->regionId);
 
         return $this->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+        ]);
+    }
+
+    /**
+     * @param $id
+     * @return string
+     * @throws NotFoundHttpException
+     */
+    public function actionTime($id)
+    {
+        $model = $this->findModel($id);
+        if ($post = Yii::$app->request->post()) {
+            if ($post['radio'] == true) {
+                $model->time += $post['time'];
+            } else {
+                $model->time -= $post['time'];
+            }
+            if ($model->save()) {
+                return $this->redirect(['prisoner/view', 'id' => $id]);
+            }
+        }
+        return $this->render('time', [
+            'model' => $model
         ]);
     }
 
@@ -72,6 +111,7 @@ class UserController extends Controller
 
         return $this->render('create', [
             'model' => $model,
+            'regions' => $this->regions,
         ]);
     }
 
@@ -92,6 +132,7 @@ class UserController extends Controller
 
         return $this->render('update', [
             'model' => $model,
+            'regions' => $this->regions
         ]);
     }
 

@@ -3,19 +3,20 @@
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $model common\models\Zone */
+/* @var $model common\models\User */
 
-$this->title = 'Update Prison: ' . $model->name;
-$this->params['breadcrumbs'][] = ['label' => 'Prisons', 'url' => ['index']];
+$this->title = 'Update Prisoner: ' . $model->name;
+$this->params['breadcrumbs'][] = ['label' => 'Prisoners', 'url' => ['index']];
 $this->params['breadcrumbs'][] = ['label' => $model->name, 'url' => ['view', 'id' => $model->id]];
 $this->params['breadcrumbs'][] = 'Update';
 ?>
-<div class="zone-update">
+<div class="user-update">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <?= $this->render('_form', [
         'model' => $model,
+        'regions' => $regions,
     ]) ?>
 
 </div>

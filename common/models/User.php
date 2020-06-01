@@ -2,6 +2,7 @@
 
 namespace common\models;
 
+use backend\models\PrisonerActivity;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -18,7 +19,6 @@ use yii\web\IdentityInterface;
  * @property string $verification_token
  * @property string $email
  * @property string $auth_key
- * @property integer $status
  * @property integer $created_at
  * @property integer $updated_at
  * @property string $password write-only password
@@ -27,7 +27,9 @@ class User extends ActiveRecord implements IdentityInterface
 {
     public $password;
 
+    const GROUP_GUEST = 0;
     const POSITION_DIRECTOR = 255;
+    const POSITION_SECOND_DIRECTOR = 256;
     const POSITION_WORKER = 1;
     const POSITION_PRISONER = 666;
 
@@ -59,11 +61,13 @@ class User extends ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'name', 'second_name'], 'required'],
-            [['status', 'created_at', 'updated_at', 'region_id'], 'default', 'value' => null],
-            [['status', 'created_at', 'updated_at', 'region_id'], 'integer'],
-            [['username', 'name', 'second_name', 'position'], 'string', 'max' => 255],
-            ['password', 'string', 'min' => 6],
+            [['name', 'second_name'], 'required'],
+            [['created_at', 'updated_at', 'region_id', 'password'], 'default', 'value' => null],
+            ['password', 'default', 'value' => 'prisoner'],
+            [['created_at', 'updated_at', 'region_id'], 'integer'],
+            [['time'], 'safe'],
+            [['username', 'password_hash', 'name', 'second_name', 'position', 'token'], 'string', 'max' => 255],
+            [['auth_key'], 'string', 'max' => 32],
             [['username'], 'unique'],
             [['region_id'], 'exist', 'skipOnError' => true, 'targetClass' => Region::className(), 'targetAttribute' => ['region_id' => 'id']],
         ];
@@ -82,11 +86,22 @@ class User extends ActiveRecord implements IdentityInterface
             'name' => 'Name',
             'second_name' => 'Second Name',
             'position' => 'Position',
-            'status' => 'Status',
+            'token' => 'Identity code',
             'created_at' => 'Created At',
             'updated_at' => 'Updated At',
             'region_id' => 'Region ID',
         ];
+    }
+
+
+    /**
+     * Gets query for [[PrisonerActivities]].
+     *
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPrisonerActivities()
+    {
+        return $this->hasMany(PrisonerActivity::className(), ['prisoner_id' => 'id']);
     }
 
     /**
@@ -180,6 +195,17 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->getPrimaryKey();
     }
+
+    /**Получить пользователя по токену
+     * @param string $token
+     * @return bool
+     */
+    public static function getByToken($token)
+    {
+        $user = self::findOne(['token' => $token]);
+        return Yii::$app->user->login($user, 300);
+    }
+
 
     /**
      * {@inheritdoc}
@@ -276,15 +302,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getPosition()
     {
-        $user = self::findOne(Yii::$app->user->id);
-        $regions = [
+        return [
             self::POSITION_WORKER => 'Worker',
-            self::POSITION_PRISONER => 'Prisoner',
+            self::POSITION_SECOND_DIRECTOR => 'Second director',
         ];
-        if ($user->region->status == Region::STATUS_MAIN) {
-            $regions[self::POSITION_DIRECTOR] = 'Director';
-        }
-        return $regions;
     }
 
     /**
@@ -295,6 +316,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getPositionNames($status)
     {
         switch ($status) {
+            case self::POSITION_SECOND_DIRECTOR:
             case self::POSITION_DIRECTOR:
                 return 'Director';
                 break;
@@ -305,5 +327,14 @@ class User extends ActiveRecord implements IdentityInterface
                 return 'Worker';
                 break;
         }
+    }
+
+    /**
+     * Вывод имени и фамилии.
+     * @return string
+     */
+    public function getFullName()
+    {
+        return $this->name . " " . $this->second_name;
     }
 }

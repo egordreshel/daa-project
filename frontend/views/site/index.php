@@ -2,52 +2,75 @@
 
 /* @var $this yii\web\View */
 
-$this->title = 'My Yii Application';
+use aneeshikmat\yii2\Yii2TimerCountDown\Yii2TimerCountDown;
+use yii\helpers\Html;
+use yii\widgets\DetailView;
+
+/* @var $model common\models\User */
+
+$this->title = $model->name;
+\yii\web\YiiAsset::register($this);
 ?>
-<div class="site-index">
+    <br class="user-view">
 
-    <div class="jumbotron">
-        <h1>Congratulations!</h1>
+    <h1><?= Html::encode($this->title) ?></h1>
 
-        <p class="lead">You have successfully created your Yii-powered application.</p>
+<?= DetailView::widget([
+    'model' => $model,
+    'attributes' => [
+        'id',
+        'name',
+        'second_name',
+        'time',
+        ['label' => 'Penalty',
+            'value' => function ($model) {
+                return $model->prisonerActivities->penalty;
+            }],
+        ['label' => 'Privileges',
+            'value' => function ($model) {
+                return $model->prisonerActivities->privileges;
+            }],
+    ],
+]) ?>
+<?php if ($model->time > 0): ?>
+    <?= Html::button('Start', ['id' => 'start']) ?>
+    <?= Html::button('Stop', ['id' => 'stop', 'class' => 'hidden']) ?>
+<?php endif; ?>
+<?php if ($model->time < 0): ?>
+    <h1>You can't call</h1>
+<?php endif; ?>
+    <br><br>
+    <br>
+    <p>You have</p>
+    <h2 id="demo"><?= $model->time ?></h2>
+    <p>seconds</p>
+    <br><br>
+<?php $this->registerJs('
+  var userId = ' . $model->id . ';      
+'); ?>
+<?php $this->registerJs(<<<JS
+var idIntervals = 0;
+$('#start').on('click', function() {
+    var doUpdate = function() {
+        $('#demo').each(function() {
+        var count = parseInt($(this).html());
+            if (count !== 0) {
+                $(this).html(count - 1);
+            }
+        });
+    };
+    $('#stop').removeClass('hidden');
+    idIntervals = setInterval(doUpdate, 1000);
+})
 
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
+$('#stop').on('click', function() {
+    clearInterval(idIntervals);
+     $.ajax({
+          url: '/site/timer',
+          type: 'POST',
+          data: {time: $('#demo').text(), id: userId},
+      });
+});
 
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
-</div>
+JS
+);

@@ -4,18 +4,18 @@ use yii\helpers\Html;
 use yii\grid\GridView;
 
 /* @var $this yii\web\View */
-/* @var $searchModel backend\models\ZoneSearch */
+/* @var $searchModel backend\models\PrisonerActivitySearch */
 /* @var $dataProvider yii\data\ActiveDataProvider */
 
-$this->title = 'Prisons';
+$this->title = 'Prisoner Activities';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<div class="zone-index">
+<div class="prisoner-activity-index">
 
     <h1><?= Html::encode($this->title) ?></h1>
 
     <p>
-        <?= Html::a('Create Prison', ['create'], ['class' => 'btn btn-success']) ?>
+        <?= Html::a('Create Prisoner Activity', ['create'], ['class' => 'btn btn-success']) ?>
     </p>
 
     <?php // echo $this->render('_search', ['model' => $searchModel]); ?>
@@ -27,12 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
             ['class' => 'yii\grid\SerialColumn'],
 
             'id',
-            'name',
-            ['attribute' => 'region_id',
-                'value' => function ($model) {
-                    return $model->region->name;
-                }
-            ],
+            'prisoner_id',
+            'penalty',
+            'privileges',
 
             ['class' => 'yii\grid\ActionColumn'],
         ],
