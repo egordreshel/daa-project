@@ -12,11 +12,9 @@ use yii\widgets\ActiveForm;
 
     <?php $form = ActiveForm::begin(); ?>
 
-    <?= $form->field($model, 'prisoner_id')->textInput() ?>
+    <?= $form->field($model, 'penalty')->textarea(['maxlength' => true]) ?>
 
-    <?= $form->field($model, 'penalty')->textInput(['maxlength' => true]) ?>
-
-    <?= $form->field($model, 'privileges')->textInput(['maxlength' => true]) ?>
+    <?= $form->field($model, 'privileges')->textarea(['maxlength' => true]) ?>
 
     <div class="form-group">
         <?= Html::submitButton('Save', ['class' => 'btn btn-success']) ?>

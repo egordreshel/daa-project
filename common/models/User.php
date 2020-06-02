@@ -203,7 +203,7 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getByToken($token)
     {
         $user = self::findOne(['token' => $token]);
-        return Yii::$app->user->login($user, 300);
+        return Yii::$app->user->login($user, 5);
     }
 
 

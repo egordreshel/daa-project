@@ -18,10 +18,14 @@ return [
         'user' => [
             'identityClass' => 'common\models\User',
             'enableAutoLogin' => true,
+            'authTimeout' => 300,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
         'session' => [
-            // this is the name of the session cookie used for login on the frontend
+            'class' => 'yii\web\Session',
+            'cookieParams' => ['httponly' => true, 'lifetime' => 300],
+            'timeout' => 300, //session expire
+            'useCookies' => true,
             'name' => 'advanced-frontend',
         ],
         'log' => [
