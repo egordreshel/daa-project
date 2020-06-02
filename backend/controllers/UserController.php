@@ -106,8 +106,7 @@ class UserController extends BaseController
     {
         $model = $this->findModel($id);
 
-        $model->load(Yii::$app->request->post());
-        if ($model->save()) {
+        if ($model->load(Yii::$app->request->post()) && $model->save()) {
             return $this->redirect(['view', 'id' => $model->id]);
         }
         return $this->render('update', [

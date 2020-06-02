@@ -14,7 +14,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <div class="user-view">
 
     <h1><?= Html::encode($this->title) ?></h1>
-
     <p>
         <?= Html::a('Update', ['update', 'id' => $model->id], ['class' => 'btn btn-primary']) ?>
         <?= Html::a('Delete', ['delete', 'id' => $model->id], [
@@ -42,13 +41,21 @@ $this->params['breadcrumbs'][] = $this->title;
             'time',
             ['label' => 'Penalty',
                 'value' => function ($model) {
-                    return $model->prisonerActivities->penalty;
+                    $result = '';
+                    foreach ($model->prisonerActivities as $activity) {
+                        $result .= $activity->penalty . "\n";
+                    }
+                    return $result;
                 }],
             ['label' => 'Privileges',
                 'value' => function ($model) {
-                    return $model->prisonerActivities->privileges;
+                    $result = '';
+                    foreach ($model->prisonerActivities as $activity) {
+                        $result .= $activity->privileges . "\n";
+                    }
+                    return $result;
                 }],
-            ],
-        ]) ?>
+        ]
+    ]) ?>
 
 </div>

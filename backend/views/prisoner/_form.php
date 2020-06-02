@@ -32,16 +32,6 @@ use yii\widgets\ActiveForm;
             <div class="col-sm-3">
         <?= $form->field($model, 'region_id')->dropDownList($regions, ['disabled' => 'disabled'])->label('Region') ?>            </div>
         <?php endif; ?>
-        <?php if (!$model->isNewRecord): ?>
-    </div>
-    <div class="row">
-        <div class="col-sm-3">
-            <?= $form->field($model, 'penalty')->textarea(); ?>
-        </div>
-        <div class="col-sm-3">
-            <?= $form->field($model, 'privileges')->textarea(); ?>
-        </div>
-        <?php endif; ?>
     </div>
 </div>
 <div class="form-group">

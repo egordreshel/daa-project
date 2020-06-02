@@ -1,5 +1,6 @@
 <?php
 
+use yii\grid\ActionColumn;
 use yii\helpers\Html;
 use yii\grid\GridView;
 
@@ -44,7 +45,37 @@ $this->params['breadcrumbs'][] = $this->title;
                 }
             ],
 
-            ['class' => 'yii\grid\ActionColumn'],
+            ['class' => ActionColumn::className(),
+                'template' => '{view} {update} {delete}',
+                'buttons' => [
+                    'delete' => function ($url, $model, $key) {
+                        if ($model->position != \common\models\User::POSITION_DIRECTOR) {
+                            return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                                'title' => Yii::t('app', 'Șterge'),
+                                'data-confirm' => Yii::t('app', 'Sigur doriți să ștergeți?'),
+                                'data-method' => 'post',
+                                'access' => 'delete',
+                                'visible' => Yii::$app->user->can(Yii::$app->id . Yii::$app->controller->id . '/delete'),
+                                'data-pjax' => '0',
+                            ]);
+                        }
+                    },
+                    'view' => function ($url, $model, $key) {
+                        return Html::a('<span class="glyphicon glyphicon-eye-open"></span>', $url, [
+                            'title' => 'View',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                    'update' => function ($url, $model, $key) {
+                        return Html::a('<span class="glyphicon glyphicon-pencil"></span>', $url, [
+                            'title' => 'Update',
+                            'data-method' => 'post',
+                            'data-pjax' => '0',
+                        ]);
+                    },
+                ]
+            ]
         ],
     ]); ?>
 

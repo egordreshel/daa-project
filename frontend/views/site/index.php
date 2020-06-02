@@ -12,26 +12,36 @@ $this->title = $model->name;
 \yii\web\YiiAsset::register($this);
 ?>
     <br class="user-view">
-
     <h1><?= Html::encode($this->title) ?></h1>
-
-<?= DetailView::widget([
-    'model' => $model,
-    'attributes' => [
-        'id',
+    <div class="row">
+        <div class="col-sm-3">
+            <p style="color: red" id="timer"><?= $lifetime ?></p>
+        </div>
+        <div class="col-sm-3">
+            <p style="margin-left: -259px;">seconds left</p>
+        </div>
+    </div>
+<?= DetailView::widget(['model' => $model,
+    'attributes' => ['id',
         'name',
         'second_name',
         'time',
         ['label' => 'Penalty',
             'value' => function ($model) {
-                return $model->prisonerActivities->penalty;
+                $result = '';
+                foreach ($model->prisonerActivities as $activity) {
+                    $result .= $activity->penalty . "\n";
+                }
+                return $result;
             }],
         ['label' => 'Privileges',
             'value' => function ($model) {
-                return $model->prisonerActivities->privileges;
-            }],
-    ],
-]) ?>
+                $result = '';
+                foreach ($model->prisonerActivities as $activity) {
+                    $result .= $activity->privileges . "\n";
+                }
+                return $result;
+            }],],]) ?>
 <?php if ($model->time > 0): ?>
     <?= Html::button('Start', ['id' => 'start']) ?>
     <?= Html::button('Stop', ['id' => 'stop', 'class' => 'hidden']) ?>
@@ -53,6 +63,22 @@ var idIntervals = 0;
 $('#start').on('click', function() {
     var doUpdate = function() {
         $('#demo').each(function() {
+        var count = parseInt($(this).html());
+            if (count !== 0) {
+                $(this).html(count - 1);
+            }
+        });
+    };
+    $('#stop').removeClass('hidden');
+    idIntervals = setInterval(doUpdate, 1000);
+})
+
+$(document).ready(function() {
+  if ($('#demo').text() === '0') {
+      $('#stop').click();
+  }
+  var doUpdate = function() {
+        $('#timer').each(function() {
         var count = parseInt($(this).html());
             if (count !== 0) {
                 $(this).html(count - 1);

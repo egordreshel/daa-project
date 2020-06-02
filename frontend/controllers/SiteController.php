@@ -88,6 +88,7 @@ class SiteController extends Controller
         }
         return $this->render('index', [
             'model' => $this->findModel(Yii::$app->user->id),
+            'lifetime' => Yii::$app->getSession()->getTimeout()
         ]);
     }
 

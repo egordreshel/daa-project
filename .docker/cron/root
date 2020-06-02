@@ -1,0 +1,7 @@
+SHELL=/bin/sh
+PATH=/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin
+
+# m h dom mon dow user	command
+30 0 * */1 1 www-data cd /app && php ./yii prisoners/add-time >> /var/log/cron.log 2>&1
+
+#

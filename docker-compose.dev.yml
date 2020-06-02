@@ -80,6 +80,25 @@ services:
     volumes_from:
       - source
 
+  # Cron
+  cron:
+    build:
+      context: ./.docker/cron
+      args:
+        - UID=${UID}
+    container_name: ${COMPOSE_PROJECT_NAME}-cron
+    working_dir: ${APP_PATH}
+    depends_on:
+      - db
+      - php
+    links:
+      - db:postgres
+      - php:php
+    environment:
+      - CUSTOM_ENV=value
+    volumes_from:
+      - source
+
   # Nginx
   nginx:
     build:
